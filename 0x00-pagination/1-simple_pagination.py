@@ -36,7 +36,7 @@ class Server:
         assert (page > 0)
         assert type(page_size) == int
         assert (page_size > 0)
-        
+
         # determine the end index
         end_index = page_size * page
 
@@ -46,6 +46,6 @@ class Server:
         # return empty list if the indexes are out of range of the dataset
         if end_index > len(self.dataset()):
             return []
-        
+
         data = self.dataset()
         return data[start_index:end_index]
