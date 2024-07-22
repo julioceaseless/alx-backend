@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Main file
+Main file to test simple pagination
 """
 
 Server = __import__('1-simple_pagination').Server

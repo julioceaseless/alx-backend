@@ -13,6 +13,7 @@ class Server:
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
+        """ initialize """
         self.__dataset = None
 
     def dataset(self) -> List[List]:
@@ -35,10 +36,16 @@ class Server:
         assert (page > 0)
         assert type(page_size) == int
         assert (page_size > 0)
-
+        
+        # determine the end index
         end_index = page_size * page
+
+        # determine the start index
         start_index = end_index - page_size
+
+        # return empty list if the indexes are out of range of the dataset
         if end_index > len(self.dataset()):
             return []
+        
         data = self.dataset()
         return data[start_index:end_index]
