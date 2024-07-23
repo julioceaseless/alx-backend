@@ -46,6 +46,7 @@ class Server:
         """
         assert index is not None and index >= 0
         assert type(page_size) == int and page_size > 0
+        assert index < len(self.dataset())
 
         indexed_data = self.indexed_dataset()
         data = []
