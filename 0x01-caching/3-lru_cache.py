@@ -20,8 +20,8 @@ class LRUCache(BaseCaching):
         Add data to cache
         """
         # Add item to cache
-        if key and item:
-            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
+        if key is not None and item is not None:
+            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
                 cache_keys = list(self.cache_data.keys())
 
                 # remove the most recent addition
