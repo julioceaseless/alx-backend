@@ -23,8 +23,14 @@ class LIFOCache(BaseCaching):
             self.cache_data[key] = item
             if len(self.cache_data) > BaseCaching.MAX_ITEMS:
                 cache_keys = list(self.cache_data.keys())
+
+                # remove the most recent addition
+                latest_key = cache_keys.pop()
+
+                popped = self.cache_data.pop(latest_key)
+
                 print("DISCARD: {}"
-                      .format(self.cache_data.pop(cache_keys[-1])))
+                      .format(latest_key))
         else:
             pass
 
