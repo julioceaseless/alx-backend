@@ -19,18 +19,20 @@ class LIFOCache(BaseCaching):
         """
         Add data to cache
         """
+        # Add item to cache
         if key and item:
-            self.cache_data[key] = item
             if len(self.cache_data) > BaseCaching.MAX_ITEMS:
                 cache_keys = list(self.cache_data.keys())
 
                 # remove the most recent addition
                 latest_key = cache_keys.pop()
 
-                popped = self.cache_data.pop(latest_key)
+                popped_item = self.cache_data.pop(latest_key)
 
                 print("DISCARD: {}"
                       .format(latest_key))
+
+            self.cache_data[key] = item
         else:
             pass
 
