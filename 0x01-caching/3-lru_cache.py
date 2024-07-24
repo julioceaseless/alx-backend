@@ -5,7 +5,7 @@ Create a FIFO cache
 BaseCaching = __import__('base_caching').BaseCaching
 
 
-class LIFOCache(BaseCaching):
+class LRUCache(BaseCaching):
     """
     Last In First Out caching class
     """
@@ -25,12 +25,12 @@ class LIFOCache(BaseCaching):
                 cache_keys = list(self.cache_data.keys())
 
                 # remove the most recent addition
-                latest_key = cache_keys.pop()
+                lru_key = cache_keys.pop(0)
 
-                popped_item = self.cache_data.pop(latest_key)
+                popped_item = self.cache_data.pop(lru_key)
 
                 print("DISCARD: {}"
-                      .format(latest_key))
+                      .format(lru_key))
 
             self.cache_data[key] = item
         else:
