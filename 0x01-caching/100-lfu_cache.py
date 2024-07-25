@@ -56,20 +56,23 @@ class LFUCache(BaseCaching):
                     min_freq = min(self.usage.keys())
                     lfu_keys = self.usage[min_freq]
 
+                    lru_key = None
                     # If there's more than one LFU key, remove LRU
                     if len(lfu_keys) > 1:
-                        lru_key = next(k for k in self.access_order if k in lfu_keys)
-                    else:
-                        lru_key = lfu_keys[0]
+                        for k in self.access_order:
+                            if k in lfu_keys:
+                                lru_key = k
+                                break
 
-                    # Remove the selected key
-                    self.cache_data.pop(lru_key)
-                    self.freq.pop(lru_key)
-                    self.usage[min_freq].remove(lru_key)
-                    if not self.usage[min_freq]:
-                        del self.usage[min_freq]
-                    self.access_order.remove(lru_key)
-                    print("DISCARD: {}".format(lru_key))
+                    if lru_key is not None:
+                        # Remove the selected key
+                        self.cache_data.pop(lru_key)
+                        self.freq.pop(lru_key)
+                        self.usage[min_freq].remove(lru_key)
+                        if not self.usage[min_freq]:
+                            del self.usage[min_freq]
+                        self.access_order.remove(lru_key)
+                        print("DISCARD: {}".format(lru_key))
 
                 # Add new item
                 self.cache_data[key] = item
