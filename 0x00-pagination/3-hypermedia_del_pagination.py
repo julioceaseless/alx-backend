@@ -44,11 +44,35 @@ class Server:
 
         return self.__indexed_dataset
 
+    def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
+        """Returns a dictionary containing the hypermedia
+        pagination information."""
+        data = self.indexed_dataset()
+        start = 0 if index is None else index
+        assert data is not None
+
+        data_ = []
+        current_index = start
+
+        while len(data_) < page_size and current_index < len(data):
+            item = data.get(current_index)
+            if item is not None:
+                data_.append(item)
+            current_index += 1
+
+        next_index = current_index if current_index < len(data) else None
+
+        hyper_index_dict = {
+            "index": start,
+            "next_index": next_index,
+            "page_size": len(data_),
+            "data": data_,
+        }
+
+        return hyper_index_dict
+    """
     def get_hyper_index(self, index: int = None,
                         page_size: int = 10) -> Dict:
-        """
-        Returns a dictionary with pagination details considering deletions.
-        """
         assert index is not None and index >= 0
         assert isinstance(page_size, int) and page_size > 0
         assert index < len(self.dataset())
@@ -70,3 +94,4 @@ class Server:
             'page_size': len(data),
             'data': data
         }
+    """
