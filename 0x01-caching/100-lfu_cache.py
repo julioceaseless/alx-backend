@@ -5,9 +5,10 @@ BaseCaching = __import__('base_caching').BaseCaching
 
 
 class LFUCache(BaseCaching):
+    """ LFU Caching system """
     def __init__(self):
+        """ Initialization """
         super().__init__()
-
         self.order = []
 
         # key = key, value = no of times the key is accessed
