@@ -44,8 +44,6 @@ class LFUCache(BaseCaching):
                         if value == least_frequency:
                             least_freq_keys.append(key)
                     """
-                    print(f"There are keys with {least_frequency}:
-                          {least_freq_keys}")
                     # if many keys, use LRU to pick the oldest
                     if len(least_freq_keys) > 1:
                         target_key = None
