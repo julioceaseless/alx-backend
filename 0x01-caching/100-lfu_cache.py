@@ -1,92 +1,80 @@
 #!/usr/bin/env python3
-"""
-Create an LFU cache with LRU tie-breaker
-"""
+"""Simple LRU cache"""
+
 BaseCaching = __import__('base_caching').BaseCaching
 
 
 class LFUCache(BaseCaching):
-    """
-    Least Frequently Used caching class with LRU tie-breaker
-    """
     def __init__(self):
-        """
-        Initialize
-        """
         super().__init__()
-        # Frequency count for each key
+
+        self.order = []
+
+        # key = key, value = no of times the key is accessed
         self.freq = {}
 
-        # Order of usage for each frequency
-        self.usage = {}
-
-        # Overall access order to handle LRU within same frequency
-        self.access_order = []
-
-    def _update_usage(self, key):
-        """
-        Update the usage order of a key
-        """
-        freq = self.freq[key]
-        self.usage[freq].remove(key)
-        if not self.usage[freq]:
-            del self.usage[freq]
-
-        self.freq[key] += 1
-        freq = self.freq[key]
-        if freq not in self.usage:
-            self.usage[freq] = []
-        self.usage[freq].append(key)
-
-        # Update the access order to move the key to the end (MRU)
-        self.access_order.remove(key)
-        self.access_order.append(key)
-
     def put(self, key, item):
-        """
-        Add data to cache
-        """
-        if key is not None and item is not None:
+        """ Add an item in the cache """
+        if key and item:
             if key in self.cache_data:
+                """overwrite the key"""
                 self.cache_data[key] = item
-                self._update_usage(key)
+                # Update trackers
+                # reorder the key in the list
+                self.order.remove(key)
+                self.order.append(key)
+
+                # increment frequency
+                self.freq[key] = self.freq.get(key, 0) + 1
+
             else:
-                if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
-                    # Find the LFU key(s)
-                    min_freq = min(self.usage.keys())
-                    lfu_keys = self.usage[min_freq]
+                """add a new key, value"""
+                # check if buffer is full
+                if len(self.cache_data) >= self.MAX_ITEMS:
+                    # get lease usage value
+                    least_frequency = min(self.freq.values())
 
-                    lru_key = None
-                    # If there's more than one LFU key, remove LRU
-                    if len(lfu_keys) > 1:
-                        for k in self.access_order:
-                            if k in lfu_keys:
-                                lru_key = k
+                    # store keys with same frequency
+                    least_freq_keys = []
+                    # add least used keys to list
+                    least_freq_keys = [key
+                                       for key, value in self.freq.items()
+                                       if value == least_frequency]
+                    """for key, value in self.freq.items():
+                        if value == least_frequency:
+                            least_freq_keys.append(key)
+                    """
+                    print(f"There are keys with {least_frequency}:
+                          {least_freq_keys}")
+                    # if many keys, use LRU to pick the oldest
+                    if len(least_freq_keys) > 1:
+                        target_key = None
+                        # iterate through the order list
+                        for i in self.order:
+                            if i in least_freq_keys:
+                                target_key = i
                                 break
+                    else:
+                        target_key = least_freq_keys[0]
 
-                    if lru_key is not None:
-                        # Remove the selected key
-                        self.cache_data.pop(lru_key)
-                        self.freq.pop(lru_key)
-                        self.usage[min_freq].remove(lru_key)
-                        if not self.usage[min_freq]:
-                            del self.usage[min_freq]
-                        self.access_order.remove(lru_key)
-                        print("DISCARD: {}".format(lru_key))
+                    # delete the key
+                    del self.cache_data[target_key]
+                    del self.freq[target_key]
+                    self.order.remove(target_key)
+                    print(f"DISCARD: {target_key}")
 
-                # Add new item
+                """ add and track the new key """
                 self.cache_data[key] = item
+                # add to order list
+                self.order.append(key)
+                # add to key usage tracker
                 self.freq[key] = 1
-                if 1 not in self.usage:
-                    self.usage[1] = []
-                self.usage[1].append(key)
-                self.access_order.append(key)
 
     def get(self, key):
-        """
-        Get data from cache
-        """
+        """ Get an item by key """
         if key in self.cache_data:
-            self._update_usage(key)
+            self.order.remove(key)
+            self.order.append(key)
+            self.freq[key] = self.freq.get(key, 0) + 1
             return self.cache_data[key]
         return None
