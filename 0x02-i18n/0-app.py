@@ -8,6 +8,7 @@ from flask_babel import Babel
 # create a flask instance
 app = Flask(__name__)
 
+
 # route for index page
 @app.route("/")
 def index():
