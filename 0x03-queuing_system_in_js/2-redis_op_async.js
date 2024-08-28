@@ -23,14 +23,8 @@ client.once('ready', () => {
 
   // Function to display the value of a school
   const displaySchoolValue = async (schoolName) => {
-    try {
-      const value = await getAsync(schoolName);
-      console.log(value);
-      return value; // Explicitly return the value
-    } catch (err) {
-      console.error('Error fetching value:', err);
-      return null; // Return null or handle the error appropriately
-    }
+    const value = await getAsync(schoolName);
+    console.log(value);
   };
 
   // Example usage
