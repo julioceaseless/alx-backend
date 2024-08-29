@@ -27,7 +27,7 @@ const listProducts = [
     itemName: 'Suitcase 1050',
     price: 550,
     initialAvailableQuantity: 5
-  },
+  }
 ];
 
 const getItemById = (id) => {
@@ -105,7 +105,7 @@ app.get('/reserve_product/:itemId', (req, res) => {
 const resetProductsStock = () => {
   return Promise.all(
     listProducts.map(
-      item => promisify(client.SET).bind(client)(`item.${item.itemId}`, 0),
+      item => promisify(client.SET).bind(client)(`item.${item.itemId}`, 0)
     )
   );
 };

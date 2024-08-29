@@ -30,7 +30,7 @@ app.get('/available_seats', (_, res) => {
   getCurrentAvailableSeats()
     // .then(result => Number.parseInt(result || 0))
     .then((numberOfAvailableSeats) => {
-      res.json({ numberOfAvailableSeats })
+      res.json({ numberOfAvailableSeats });
     });
 });
 
@@ -47,7 +47,7 @@ app.get('/reserve_seat', (_req, res) => {
         'Seat reservation job',
         job.id,
         'failed:',
-        err.message || err.toString(),
+        err.message || err.toString()
       );
     });
     job.on('complete', () => {
